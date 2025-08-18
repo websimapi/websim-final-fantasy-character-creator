@@ -1,0 +1,22 @@
+{
+  "database": {
+    "schema": {
+      "worlds": {
+        "id": {
+          "type": "text",
+          "description": "The host's user_id, ensuring one world per host."
+        },
+        "world_name": {
+          "type": "text",
+          "description": "The name of the world, set by the host."
+        },
+        "world_data": {
+          "type": "jsonb",
+          "description": "A JSON object containing all world state, including players, map, NPCs, etc."
+        }
+      }
+    },
+    "instructions": "To manage a world, upsert a record into the 'worlds' table with the 'id' field set to your user_id. The 'world_data' field should contain all game state. All clients connect to the host, and only the host can authoritatively update this record."
+  }
+}
+
