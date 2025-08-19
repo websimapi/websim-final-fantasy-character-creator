@@ -231,6 +231,7 @@ function CharacterCreator({ setCharacter }) {
 }
 function GameScene({ character, returnToMenu }) {
   const canvasRef = React.useRef(null);
+  const [playerImage, setPlayerImage] = useState(null);
   const [gameState, setGameState] = useState({
     player: { x: 400, y: 300, facing: "down" },
     npcs: [
@@ -241,6 +242,13 @@ function GameScene({ character, returnToMenu }) {
     showDialogue: null,
     keys: {}
   });
+  useEffect(() => {
+    if (character.imageUrl) {
+      const img = new Image();
+      img.src = character.imageUrl;
+      img.onload = () => setPlayerImage(img);
+    }
+  }, [character.imageUrl]);
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -295,6 +303,7 @@ function GameScene({ character, returnToMenu }) {
     return () => clearInterval(gameLoop);
   }, []);
   useEffect(() => {
+    if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "#2d5016";
@@ -326,13 +335,22 @@ function GameScene({ character, returnToMenu }) {
       ctx.textAlign = "center";
       ctx.fillText(npc.name, npc.x, npc.y - 20);
     });
-    ctx.fillStyle = "#4169e1";
-    ctx.fillRect(gameState.player.x - 15, gameState.player.y - 15, 30, 30);
-    ctx.fillStyle = "#000";
+    if (playerImage) {
+      const playerWidth = 40;
+      const playerHeight = 60;
+      ctx.drawImage(playerImage, gameState.player.x - playerWidth / 2, gameState.player.y - playerHeight / 2, playerWidth, playerHeight);
+    } else {
+      ctx.fillStyle = "#4169e1";
+      ctx.fillRect(gameState.player.x - 15, gameState.player.y - 15, 30, 30);
+    }
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "black";
+    ctx.shadowBlur = 4;
     ctx.font = "12px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("You", gameState.player.x, gameState.player.y - 20);
-  }, [gameState.player, gameState.npcs]);
+    ctx.fillText("You", gameState.player.x, gameState.player.y - 35);
+    ctx.shadowBlur = 0;
+  }, [gameState.player, gameState.npcs, playerImage]);
   const checkInteraction = () => {
     const playerX = gameState.player.x;
     const playerY = gameState.player.y;
@@ -358,17 +376,17 @@ function GameScene({ character, returnToMenu }) {
     /* @__PURE__ */ jsxDEV("div", { className: "text-center mb-4", children: [
       /* @__PURE__ */ jsxDEV("h2", { className: "ff-title text-3xl text-blue-300", children: "Crystal Town" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 300,
+        lineNumber: 320,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "text-gray-400", children: "Use WASD or Arrow Keys to move \u2022 Space to interact with NPCs" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 301,
+        lineNumber: 321,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 299,
+      lineNumber: 319,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "relative bg-black border-2 border-gray-600 rounded-lg overflow-hidden", children: [
@@ -385,7 +403,7 @@ function GameScene({ character, returnToMenu }) {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 305,
+          lineNumber: 325,
           columnNumber: 17
         },
         this
@@ -394,17 +412,17 @@ function GameScene({ character, returnToMenu }) {
         /* @__PURE__ */ jsxDEV("div", { children: [
           /* @__PURE__ */ jsxDEV("h4", { className: "font-bold text-blue-300", children: gameState.showDialogue.name }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 317,
+            lineNumber: 337,
             columnNumber: 33
           }, this),
           /* @__PURE__ */ jsxDEV("p", { className: "text-white mt-2", children: gameState.showDialogue.dialogue }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 318,
+            lineNumber: 338,
             columnNumber: 33
           }, this)
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 316,
+          lineNumber: 336,
           columnNumber: 29
         }, this),
         /* @__PURE__ */ jsxDEV(
@@ -418,23 +436,23 @@ function GameScene({ character, returnToMenu }) {
           false,
           {
             fileName: "<stdin>",
-            lineNumber: 320,
+            lineNumber: 340,
             columnNumber: 29
           },
           this
         )
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 315,
+        lineNumber: 335,
         columnNumber: 25
       }, this) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 314,
+        lineNumber: 334,
         columnNumber: 21
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 304,
+      lineNumber: 324,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "mt-4 flex justify-center gap-4", children: [
@@ -449,7 +467,7 @@ function GameScene({ character, returnToMenu }) {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 332,
+          lineNumber: 352,
           columnNumber: 17
         },
         this
@@ -465,88 +483,88 @@ function GameScene({ character, returnToMenu }) {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 338,
+          lineNumber: 358,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 331,
+      lineNumber: 351,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "mt-4 grid grid-cols-2 gap-4 text-sm", children: [
       /* @__PURE__ */ jsxDEV("div", { className: "bg-gray-900 p-3 rounded-md border border-gray-700", children: [
         /* @__PURE__ */ jsxDEV("h4", { className: "font-bold text-blue-300 mb-2", children: "Your Character" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 348,
+          lineNumber: 368,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: [
           /* @__PURE__ */ jsxDEV("strong", { children: "Race:" }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 349,
+            lineNumber: 369,
             columnNumber: 24
           }, this),
           " ",
           character.race
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 349,
+          lineNumber: 369,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: [
           /* @__PURE__ */ jsxDEV("strong", { children: "Class:" }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 350,
+            lineNumber: 370,
             columnNumber: 24
           }, this),
           " ",
           character.class
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 350,
+          lineNumber: 370,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 347,
+        lineNumber: 367,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "bg-gray-900 p-3 rounded-md border border-gray-700", children: [
         /* @__PURE__ */ jsxDEV("h4", { className: "font-bold text-blue-300 mb-2", children: "Tutorial" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 353,
+          lineNumber: 373,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: "\u2022 Move around with WASD" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 354,
+          lineNumber: 374,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: "\u2022 Click near NPCs to talk" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 355,
+          lineNumber: 375,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: "\u2022 Explore the town!" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 356,
+          lineNumber: 376,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 352,
+        lineNumber: 372,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 346,
+      lineNumber: 366,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 298,
+    lineNumber: 318,
     columnNumber: 9
   }, this);
 }
@@ -555,96 +573,96 @@ function CharacterSheet({ character, createNew }) {
   if (showGame) {
     return /* @__PURE__ */ jsxDEV(GameScene, { character, returnToMenu: () => setShowGame(false) }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 367,
+      lineNumber: 387,
       columnNumber: 16
     }, this);
   }
   return /* @__PURE__ */ jsxDEV("div", { className: "ff-container max-w-4xl mx-auto text-center", children: [
     /* @__PURE__ */ jsxDEV("h1", { className: "ff-title text-4xl mb-4", children: "Your Character" }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 372,
+      lineNumber: 392,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "grid md:grid-cols-2 gap-8 items-center", children: [
       /* @__PURE__ */ jsxDEV("img", { src: character.imageUrl, alt: "Character Portrait", className: "rounded-lg shadow-lg border-2 border-blue-500/50 w-full" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 374,
+        lineNumber: 394,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "text-left space-y-2", children: [
         /* @__PURE__ */ jsxDEV("p", { children: [
           /* @__PURE__ */ jsxDEV("strong", { className: "font-bold text-blue-300", children: "Description:" }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 376,
+            lineNumber: 396,
             columnNumber: 24
           }, this),
           " ",
           character.description
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 376,
+          lineNumber: 396,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: [
           /* @__PURE__ */ jsxDEV("strong", { className: "font-bold text-blue-300", children: "Race:" }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 377,
+            lineNumber: 397,
             columnNumber: 24
           }, this),
           " ",
           character.race
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 377,
+          lineNumber: 397,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("p", { children: [
           /* @__PURE__ */ jsxDEV("strong", { className: "font-bold text-blue-300", children: "Class:" }, void 0, false, {
             fileName: "<stdin>",
-            lineNumber: 378,
+            lineNumber: 398,
             columnNumber: 24
           }, this),
           " ",
           character.class
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 378,
+          lineNumber: 398,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 375,
+        lineNumber: 395,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 373,
+      lineNumber: 393,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "mt-8 flex flex-col sm:flex-row justify-center gap-4", children: [
       /* @__PURE__ */ jsxDEV("button", { className: "ff-button", onClick: () => setShowGame(true), children: "Play Offline" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 382,
+        lineNumber: 402,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("button", { className: "ff-button", onClick: () => alert("Multiplayer coming soon!"), children: "Join/Host Game" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 383,
+        lineNumber: 403,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("button", { className: "ff-button bg-red-700 hover:bg-red-600", onClick: createNew, children: "Create New Character" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 384,
+        lineNumber: 404,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 381,
+      lineNumber: 401,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 371,
+    lineNumber: 391,
     columnNumber: 9
   }, this);
 }
@@ -664,41 +682,41 @@ function App() {
     /* @__PURE__ */ jsxDEV("header", { className: "text-center mb-8", children: [
       /* @__PURE__ */ jsxDEV("h1", { className: "ff-title text-5xl tracking-widest text-blue-300", children: "CRYSTAL LEGACY" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 408,
+        lineNumber: 428,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "text-gray-400", children: "An Unwritten Tale" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 409,
+        lineNumber: 429,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 407,
+      lineNumber: 427,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("main", { className: "w-full", children: character ? /* @__PURE__ */ jsxDEV(CharacterSheet, { character, createNew }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 412,
+      lineNumber: 432,
       columnNumber: 30
     }, this) : /* @__PURE__ */ jsxDEV(CharacterCreator, { setCharacter }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 412,
+      lineNumber: 432,
       columnNumber: 95
     }, this) }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 411,
+      lineNumber: 431,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 406,
+    lineNumber: 426,
     columnNumber: 9
   }, this);
 }
 const root = createRoot(document.getElementById("root"));
 root.render(/* @__PURE__ */ jsxDEV(App, {}, void 0, false, {
   fileName: "<stdin>",
-  lineNumber: 419,
+  lineNumber: 439,
   columnNumber: 13
 }));
