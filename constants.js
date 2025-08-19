@@ -1,0 +1,2 @@
+export const RACES = ["Human", "Elf", "Dwarf", "Lalafell", "Miqo'te", "Roegadyn", "Au Ra", "Viera"];
+export const CLASSES = ["Warrior", "Mage", "Thief", "Paladin", "Dragoon", "Summoner", "Ninja", "Astrologian"];
